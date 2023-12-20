@@ -46,6 +46,8 @@ class SingleLinkedList {
 
     static int choice2;
     static int choice3;
+    static int item; // item is the Number/Value which User Want to Insert
+    static int count = 0;
 
     static SLL start = null;
 
@@ -61,9 +63,12 @@ class SingleLinkedList {
                     Traverse_SLL();
                     break;
                 case 2:
+                    System.out.print("\nEnter the Item You Want to Insert : ");
+                    item = sc.nextInt();
+
                     System.out.println(
-                            "\n1.Insertion At First \n2.Insertion At Last \n3.Insertion In Middle (Before Given Node) \n4.Insertion In Middle (After Given Node) \n5.Exit");
-                    System.out.print("Choose the Operation (1 to 5) : ");
+                            "\n1.Insertion At First \n2.Insertion At Last \n3.Insertion In Middle (Before Given Node) \n4.Insertion In Middle (After Given Node) \n5.Insertion Before Searched Item \n6.Insertion After Searched Item");
+                    System.out.print("Choose the Operation (1 to 6) : ");
                     choice3 = sc.nextInt();
 
                     switch (choice3) {
@@ -74,13 +79,32 @@ class SingleLinkedList {
                             Insertion_AtLast_SLL();
                             break;
                         case 3:
-                            SLL ptr = FindMiddleNode();
+                            int mid = (int) (count / 2) + 1;
+                            SLL ptr = start;
 
+                            if (start != null) {
+                                for (int i = 1; i < mid; i++) {
+                                    ptr = ptr.next;
+                                }
+                            }
                             Insertion_InMid_BGN_SLL(ptr);
                             break;
                         case 4:
-                            SLL ptr1 = FindMiddleNode();
+                            int mid1 = (int) (count / 2) + 1;
+                            SLL ptr1 = start;
+
+                            if (start != null) {
+                                for (int i = 1; i < mid1; i++) {
+                                    ptr1 = ptr1.next;
+                                }
+                            }
                             Insertion_InMid_AGN_SLL(ptr1);
+                            break;
+                        case 5:
+                            Insertion_Search_BGN_SLL();
+                            break;
+                        case 6:
+                            Insertion_Search_AGN_SLL();
                             break;
                     }
                     break;
@@ -153,42 +177,67 @@ class SingleLinkedList {
     }
 
     static void Insertion_InMid_BGN_SLL(SLL ptr) {
-        System.out.print("\nEnter the Item You Want to Insert : ");
-        int item = sc.nextInt();
-
         SLL ptr1 = new SLL(item);
         ptr1.info = item;
         ptr1.next = ptr;
 
+        if ((start == null) || (ptr == start)) {
+            start = ptr1;
+            return;
+        }
+
         SLL ptr2 = start;
 
-        if ((ptr2 == null) || (ptr2.next == null) || (ptr == start)) {
-            start = ptr1;
-        } else {
-            while ((ptr2.next != null) && (ptr2.next != ptr)) {
-                ptr2 = ptr2.next;
-            }
-
-            ptr2.next = ptr1;
+        while ((ptr2.next != null) && (ptr2.next != ptr)) {
+            ptr2 = ptr2.next;
         }
+
+        ptr2.next = ptr1;
     }
 
     static void Insertion_InMid_AGN_SLL(SLL ptr) {
-        System.out.print("\nEnter the Item You Want to Insert : ");
-        int item = sc.nextInt();
+        if (start == null) {
+            Insertion_AtFirst_SLL();
+            return;
+        }
 
         SLL ptr1 = new SLL(item);
         ptr1.info = item;
+        ptr1.next = ptr.next;
+        ptr.next = ptr1;
+    }
 
-        if (start == null) {
-            ptr1.next = start;
+    static void Insertion_Search_BGN_SLL() {
+         System.out.print("\nEnter the Item Before You Want to Insert : ");
+        int sItem = sc.nextInt();
 
-            start = ptr1;
-        } else {
-            ptr1.next = ptr.next;
+        SLL ptr = start;
 
-            ptr.next = ptr1;
+        while (ptr != null && ptr.info != sItem) {
+            ptr = ptr.next;
+        }
+
+        if (ptr == null) {
+            System.out.println("\nItem Not Found!");
+        } else if (ptr.info == sItem) {
+            Insertion_InMid_BGN_SLL(ptr);
         }
     }
 
+    static void Insertion_Search_AGN_SLL() {
+         System.out.print("\nEnter the Item Before You Want to Insert : ");
+        int sItem = sc.nextInt();
+
+        SLL ptr = start;
+
+        while (ptr != null && ptr.info != sItem) {
+            ptr = ptr.next;
+        }
+
+        if (ptr == null) {
+            System.out.println("\nItem Not Found!");
+        } else if (ptr.info == sItem) {
+            Insertion_InMid_AGN_SLL(ptr);
+        }
+    }
 }
